@@ -104,3 +104,15 @@
   * 앞 글자가 LOC일 경우, 뒷 글자까지 LOC일 것으로 기대하지만 실제로는 아닌 경우가 많다. 이는 한국사 단어 특성상 여러 개체명이 뭉쳐있기 때문에 발생한다.
   * ex : `강릉농악`에서 `강릉`은 `LOC`이지만 `강릉농악`은 `AFW`
   * 위와 같은 이유로 LOC_I에 대한 규칙이 모호해지면서 예측력이 하락했을 것이다.
+  
+  
+---
+
+
+## :lemon: Reference
+
+* [KoBERT](https://github.com/SKTBrain/KoBERT)
+* [DistilKoBERT](https://github.com/monologg/DistilKoBERT)
+* [NER](https://github.com/eagle705/pytorch-bert-crf-ner)
+
+
