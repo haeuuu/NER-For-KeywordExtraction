@@ -1,28 +1,74 @@
-# NER-For-Keyword Extraction
+# :key: NER-For-Keyword Extraction :tipping_hand_woman:
 
 ### Named Entity Recognition for Keyword extraction from Online lecture
 
 "온라인 학습도우미 PLUS" 의 두 번째 기능인 '키워드 추출'을 위한 repo입니다.
-  
-  
+
+
+
 #### Keyword
 
 * Named Entity Recognition
 * BERT
 * Conditional Random Field
 * TF-IDF
-  
-  
-  
-## :peach: Train Data / Test data
+
+
+
+## Introduction
+
+주어진 글 속에서 **중요한 단어 / 모를만한 단어**를 어떤 기준으로 추출할 수 있을까?
+
+TF-IDF와 같이 등장 빈도를 기반으로 중요한 단어를 추출할 수 있다.
+
+그러나 도메인에 따라 "해당 개체명이 갖는 의미" 역시 중요도에 영향을 줄 것이라고 판단하였다.
+
+생명 과학에 관련된 문서에서는 <동물> , <식물 > 이 의미를 갖지만, 한국사에서는 이보다는 <인명> 이 더 중요한 단어일 가능성이 크다.
+
+개체명을 추출하고 개체명의 의미를 파악하여 단어를 추출한다면? 도메인에 더 꼭 맞는 단어 추출이 가능할 것이라고 판단하였다 !
+
+
+
+큰 흐름은 다음과 같다.
+
+
+
+#### :man_teacher: 1. 교육자의 발화가 Speech To Text를 통해 text 형태로 변환되어 입력된다.
+
+```
+공민왕이 시해되면서, 칼에 맞아 죽게 되면서 그 개혁의 배턴을 누가 이어받느냐면 신진사대부가 이어받게 될 겁니다. 그래야 호족, 문벌귀족, 무신, 권문세족, 신진사대부. 그 맥이 이어질 테니까요. 됐죠? 이게 바로 고려 오백 년의 흐름이에요. 기억나시죠? 좋습니다. 그렇다면 이제 다음 챕터로 대외 관계를 볼게요. 고려는 외침이 정말 많았던 나라입니다. 거란족의 침입, 여진족의 침입, 몽골의 침입, 홍건적과 왜구의 침입. 정말 많았거든요. 그 외침의 역사를 지금부터 하나씩 하나씩 볼 텐데 고려 파트에서 문제 두 문제 나온다고 그랬죠?
+```
+
+
+
+#### :robot: 2. 키워드 추출 모델이 개체명을 추출하고 정제한다.
+
+```
+개체명을 추출해보자 ...
+	=> "공민왕, 신진사대부, 호족, 문벌귀족, 무신, 권문세족, 고려, ... "
+TF-IDF를 통해 파악한 중요 단어 리스트와 한국사에서 특히 의미를 갖는 개체명 리스트를 교집합해보자 ...
+	=> "권문세족"이 중요해보여 !
+```
+
+
+
+#### :books: 3. 추출된 단어와 정의를 학습자에게 제공한다.
+
+```
+권문세족: 고려후기 정치세력으로 고려 전기의 문벌귀족, 조선의 양반사대부와 비견되는 지배층.권문세가.
+```
+
+
+
+# :open_file_folder: Train Data / Test data
 
 ##### NER 대회용 데이터와 한국민족문화대백과사전에서 스크래핑한 데이터를 섞어 train/test
-  
-  
-  
+
+
+
 ### 1. Naver/창원대 NLP Challenge
 
-> 네이버와 창원대에서 개최한 NLP challenge의 train set
+> 네이버와 창원대에서 개최한 [NLP challenge](http://air.changwon.ac.kr/?page_id=10)의 train set
 
 ##### 	아래와 같은 총 14개의 개체명 태그가 존재한다.
 
@@ -40,9 +86,9 @@
 12. `PLANT`	PLT	식물
 13. `MATERIAL`	MAT	금속, 암석, 화학물질 등
 14. `TERM`	TRM	의학 용어, IT곤련 용어 등 일반 용어를 총칭
-  
-  
-  
+
+
+
 #### NOTE
 
 * `index`는 새로운 문장이 시작될 때마다 1로 초기화된다.
@@ -50,9 +96,9 @@
 * B는 개체명의 시작 어절, I는 끝 어절, -는 개체명이 아닌 어절을 뜻한다.
 * 두 개체명이 조합된 경우, 앞에 등장하는 개체명을 따라 태그를 부여한다. 
   ex ) 포항공과대학교(LOC_B) 컴퓨터공학과(ORG_B) => LOC로 부여
-  
-  
-  
+
+
+
 ### 2. 한국민족문화대백과사전
 
 * 인물, 지명, 문화재, 유물, 단체 등의 카테고리를 이용하여 true tag를 생성
@@ -63,6 +109,10 @@
 
   3. NER 학습을 위해서는 문장이 필요하다. 해당 단어가 포함된 설명을 스크래핑한다.
 
+     <img src="C:\Users\haeyu\AppData\Roaming\Typora\typora-user-images\image-20200803171703617.png" alt="image-20200803171703617" style="zoom:67%;" />
+
+     <img src="C:\Users\haeyu\AppData\Roaming\Typora\typora-user-images\image-20200803171946450.png" alt="image-20200803171946450" style="zoom: 67%;" />
+
      > `교민` : `-` , `중국` : `-` , `관헌도` : `-` ,  `간민회` : `ORG_B`
 
   4. true tag가 달리지 않은 `교민`, `중국`, `관헌도 `등은 **기존의 model(acc 97%)를 이용하여 약한 정답**을 생성한다.
@@ -72,19 +122,18 @@
      > **스크래핑으로 생성한 정답**  `교민` : `-` , `중국` : `-` , `관헌도` : `-` ,  `간민회` : `ORG_B`
      >
      > **=> 최종 모델에 대한 정답 ** `교민` : `PER` , `중국` : `LOC` , `관헌도` : `LOC`  ,`간민회` : `ORG_B`
-  
-  
-  
-  
+
+
+
 #### NOTE
 
 * 전체 카테고리 중 "유물","유적","작품","제도","지명","문헌","단체","문화재" 를 이용
-  
-  
-  
-  
 
-## :peach: DistilBert + CRF
+
+
+
+
+# :slot_machine: DistilBert + CRF
 
 #### Model
 
@@ -95,8 +144,17 @@
   * 12 layer를 3개의 layer로
   * 한국어 위키, 나무위키, 뉴스 등의 10GB 데이터로 3 epoch학습
 
+
+
+
+
 * Accuracy : 0.9069
-* 한국사에서 중요한 태그라고 생각되는 `PER`, `ORG`, `CVL`, `EVT`에 대해 f1-score는 약 0.81 ~ 0.88
+* 태그별 precision, recall, f1-score 체크
+
+<img src="C:\Users\haeyu\AppData\Roaming\Typora\typora-user-images\image-20200803191525711.png" alt="image-20200803191525711" style="zoom:80%;" />
+
+* 한국사에서 중요한 태그라고 생각되는 `PER`, `ORG`, `CVL`, `EVT`에 대해 f1-score는 위와같다. 
+
 * 주로 I tag를 잘 예측하지 못하는데, 이는 한국사 용어 특성상 여러가지 개체명이 결합되어있기 때문에 발생한 현상으로 보인다.
 
   ##### 특히 LOC_I의 score가 낮은 이유는 다음과 같이 추측해볼 수 있다.
@@ -104,11 +162,10 @@
   * 앞 글자가 LOC일 경우, 뒷 글자까지 LOC일 것으로 기대하지만 실제로는 아닌 경우가 많다. 이는 한국사 단어 특성상 여러 개체명이 뭉쳐있기 때문에 발생한다.
   * ex : `강릉농악`에서 `강릉`은 `LOC`이지만 `강릉농악`은 `AFW`
   * 위와 같은 이유로 LOC_I에 대한 규칙이 모호해지면서 예측력이 하락했을 것이다.
-  
 
 
 
-## :cherries: Results
+# :page_with_curl: Results
 
 1. `자막 `: 공민왕이 시해되면서, 칼에 맞아 죽게 되면서 그 개혁의 배턴을 누가 이어받느냐면 **신진사대부가** 이어받게 될 겁니다. 그래야 호족, **문벌귀족**, 무신, **권문세족**, **신진사대부**. 그 맥이 이어질 테니까요. 됐죠? 이게 바로 고려 오백 년의 흐름이에요. 기억나시죠? 좋습니다. 그렇다면 이제 다음 챕터로 대외 관계를 볼게요. 고려는 외침이 정말 많았던 나라입니다. 거란족의 침입, 여진족의 침입, 몽골의 침입, 홍건적과 왜구의 침입. 정말 많았거든요. 그 외침의 역사를 지금부터 하나씩 하나씩 볼 텐데 고려 파트에서 문제 두 문제 나온다고 그랬죠?
 
@@ -135,10 +192,9 @@
 
 
 
-## :lemon: Reference
+# Reference
 
 * [KoBERT](https://github.com/SKTBrain/KoBERT)
 * [DistilKoBERT](https://github.com/monologg/DistilKoBERT)
 * [NER](https://github.com/eagle705/pytorch-bert-crf-ner)
-
 
