@@ -113,9 +113,9 @@ TF-IDF를 통해 파악한 중요 단어 리스트와 한국사에서 특히 의
 
   3. NER 학습을 위해서는 문장이 필요하다. 해당 단어가 포함된 설명을 스크래핑한다.
 
-     <img src="../fig/image-20200803171703617.png" alt="image-20200803171703617" style="zoom:67%;" />
+     <img src="fig/image-20200803171703617.png" alt="image-20200803171703617" style="zoom:67%;" />
 
-     <img src="../fig/image-20200803171946450.png" alt="image-20200803171946450" style="zoom: 67%;" />
+     <img src="fig/image-20200803171946450.png" alt="image-20200803171946450" style="zoom: 67%;" />
 
      > `교민` : `-` , `중국` : `-` , `관헌도` : `-` ,  `간민회` : `ORG_B`
 
@@ -155,7 +155,7 @@ TF-IDF를 통해 파악한 중요 단어 리스트와 한국사에서 특히 의
 * Accuracy : 0.9069
 * 태그별 precision, recall, f1-score 체크
 
-<img src="../fig/image-20200803191525711.png" alt="image-20200803191525711" style="zoom:80%;" />
+<img src="fig/image-20200803191525711.png" alt="image-20200803191525711" style="zoom:80%;" />
 
 * 한국사에서 중요한 태그라고 생각되는 `PER`, `ORG`, `CVL`, `EVT`에 대해 f1-score는 위와같다. 
 
